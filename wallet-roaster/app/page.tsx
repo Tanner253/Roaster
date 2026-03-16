@@ -4,7 +4,10 @@ import { useState } from "react";
 import WalletInput from "@/components/WalletInput";
 import PaymentButton from "@/components/PaymentButton";
 import RoastCard from "@/components/RoastCard";
+import TokenInfo from "@/components/TokenInfo";
 import type { RoastResult } from "@/types";
+
+const TOKEN_CA = process.env.NEXT_PUBLIC_TOKEN_CA ?? "";
 
 type AppState = "landing" | "payment" | "result";
 
@@ -34,7 +37,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex flex-col">
-      {/* Top nav */}
       <header className="border-b border-[#1a1a1a] px-6 py-4">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <button
@@ -43,19 +45,24 @@ export default function Home() {
           >
             WALLET ROASTER
           </button>
-          <span className="text-xs text-zinc-600 font-mono">0.01 SOL</span>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-zinc-600 font-mono">0.01 SOL</span>
+            <span className="text-xs text-red-400/60 font-medium">
+              Tokenized Agent
+            </span>
+          </div>
         </div>
       </header>
 
       <main className="flex-1 flex flex-col items-center justify-center px-6 py-16">
         {/* Landing */}
         {appState === "landing" && (
-          <div className="w-full max-w-lg space-y-12 fade-in">
+          <div className="w-full max-w-lg space-y-10 fade-in">
             <div className="space-y-4">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-red-950/30 border border-red-900/30 rounded-full">
-                <span className="w-1.5 h-1.5 bg-red-500 rounded-full" />
+                <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" />
                 <span className="text-xs text-red-400 font-medium">
-                  Powered by AI brutality
+                  Tokenized AI Agent on pump.fun
                 </span>
               </div>
               <h1 className="text-4xl font-bold tracking-tight text-white leading-tight">
@@ -64,13 +71,19 @@ export default function Home() {
                 <span className="text-red-500">roasted.</span>
               </h1>
               <p className="text-zinc-500 text-base leading-relaxed">
-                Paste any Solana wallet address or connect your own. Pay 0.01
-                SOL. Receive a savage, AI-generated roast of your on-chain
-                history — the rugs, the tops you bought, the bottoms you sold.
+                Connect your wallet and pay 0.01 SOL for a savage AI roast of
+                your on-chain history. Every payment flows through a tokenized
+                agent that uses{" "}
+                <span className="text-zinc-300 font-medium">
+                  100% of revenue to buy back the token
+                </span>
+                .
               </p>
             </div>
 
             <WalletInput onWalletReady={handleWalletReady} />
+
+            <TokenInfo ca={TOKEN_CA} />
 
             {/* Stats bar */}
             <div className="border-t border-[#1a1a1a] pt-8 grid grid-cols-3 gap-6">
@@ -80,11 +93,13 @@ export default function Home() {
               </div>
               <div>
                 <p className="text-lg font-bold text-white">100%</p>
-                <p className="text-xs text-zinc-600 mt-0.5">buyback</p>
+                <p className="text-xs text-zinc-600 mt-0.5">
+                  revenue → buyback
+                </p>
               </div>
               <div>
-                <p className="text-lg font-bold text-white">AI</p>
-                <p className="text-xs text-zinc-600 mt-0.5">powered</p>
+                <p className="text-lg font-bold text-white">GPT-4o</p>
+                <p className="text-xs text-zinc-600 mt-0.5">AI powered</p>
               </div>
             </div>
           </div>
@@ -118,6 +133,10 @@ export default function Home() {
                 <span className="text-zinc-500">Network</span>
                 <span className="text-white">Solana</span>
               </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-zinc-500">Buyback</span>
+                <span className="text-red-400">100% → token</span>
+              </div>
               <div className="border-t border-[#1f1f1f] pt-3 flex justify-between text-sm font-medium">
                 <span className="text-zinc-400">Total</span>
                 <span className="text-white">0.01 SOL</span>
@@ -137,8 +156,8 @@ export default function Home() {
             />
 
             <p className="text-xs text-zinc-600 text-center">
-              Payment is processed on-chain via Solana. Every payment
-              automatically buys back $TOKEN.
+              Payment is processed on-chain via a pump.fun tokenized agent.
+              100% of revenue automatically buys back the token.
             </p>
           </div>
         )}
@@ -162,11 +181,16 @@ export default function Home() {
       <footer className="border-t border-[#1a1a1a] px-6 py-4">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <p className="text-xs text-zinc-700">
-            Roasting trades, not people.
+            Tokenized AI agent — roasting trades, not people.
           </p>
-          <p className="text-xs text-zinc-700 font-mono">
-            Built on Solana
-          </p>
+          <a
+            href="https://pump.fun"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-zinc-700 hover:text-zinc-500 transition-colors font-mono"
+          >
+            Built on Solana + pump.fun
+          </a>
         </div>
       </footer>
     </div>

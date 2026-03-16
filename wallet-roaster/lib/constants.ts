@@ -35,3 +35,7 @@ export const LOW_VALUE_THRESHOLD_USD = 1.0;
 export const SOL_DECIMALS = 9;
 
 export const HELIUS_BASE_URL = "https://mainnet.helius-rpc.com";
+
+export const TOKEN_CA = (
+  process.env.NEXT_PUBLIC_TOKEN_CA ?? ""
+).trim();
