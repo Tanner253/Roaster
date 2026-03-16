@@ -2,6 +2,7 @@
 
 import { FC, useState, useCallback } from "react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { Transaction } from "@solana/web3.js";
 import type { InvoiceParams, RoastResult } from "@/types";
 
@@ -33,12 +34,18 @@ const PaymentButton: FC<PaymentButtonProps> = ({
   onRoastReady,
   onError,
 }) => {
-  const { signTransaction } = useWallet();
+  const { publicKey, signTransaction, connected } = useWallet();
   const { connection } = useConnection();
+  const { setVisible } = useWalletModal();
   const [stage, setStage] = useState<Stage>("idle");
 
   const handlePay = useCallback(async () => {
     if (stage !== "idle") return;
+
+    if (!connected || !publicKey || !signTransaction) {
+      setVisible(true);
+      return;
+    }
 
     try {
       setStage("generating_invoice");
@@ -61,9 +68,6 @@ const PaymentButton: FC<PaymentButtonProps> = ({
       setStage("awaiting_signature");
 
       const tx = Transaction.from(Buffer.from(txBase64, "base64"));
-
-      if (!signTransaction) throw new Error("Wallet does not support signing");
-
       const signedTx = await signTransaction(tx);
 
       const signature = await connection.sendRawTransaction(
@@ -117,8 +121,11 @@ const PaymentButton: FC<PaymentButtonProps> = ({
   }, [
     stage,
     walletAddress,
+    publicKey,
     signTransaction,
+    connected,
     connection,
+    setVisible,
     onRoastReady,
     onError,
   ]);
