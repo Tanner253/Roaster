@@ -15,9 +15,10 @@ export const AGENT_TOKEN_MINT_ADDRESS =
   process.env.AGENT_TOKEN_MINT_ADDRESS ?? "";
 
 export const CURRENCY_MINT =
-  process.env.CURRENCY_MINT ?? "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
+  process.env.CURRENCY_MINT ?? "So11111111111111111111111111111111111111112";
 
-export const PRICE_AMOUNT = Number(process.env.PRICE_AMOUNT ?? "500000");
+// 0.004 SOL = 4,000,000 lamports (~$0.50 at ~$130/SOL)
+export const PRICE_AMOUNT = Number(process.env.PRICE_AMOUNT ?? "4000000");
 
 export const PAYMENT_WINDOW_SECONDS = 86400; // 24 hours
 
@@ -26,7 +27,6 @@ export const VERIFY_RETRY_DELAY_MS = 2000;
 
 export const LOW_VALUE_THRESHOLD_USD = 1.0;
 
-export const USDC_DECIMALS = 6;
 export const SOL_DECIMALS = 9;
 
 export const HELIUS_BASE_URL = "https://mainnet.helius-rpc.com";

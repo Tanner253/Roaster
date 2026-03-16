@@ -21,7 +21,7 @@ type Stage =
   | "done";
 
 const STAGE_LABELS: Record<Stage, string> = {
-  idle: "Pay $0.50 to Get Roasted",
+  idle: "Pay 0.004 SOL to Get Roasted",
   generating_invoice: "Preparing transaction...",
   awaiting_signature: "Approve in wallet...",
   verifying: "Confirming payment...",
@@ -127,7 +127,7 @@ const PaymentButton: FC<PaymentButtonProps> = ({
         message = err.message;
         if (err.name === "WalletSignTransactionError") {
           message =
-            "Phantom rejected the transaction. Make sure you have enough USDC ($0.50) and SOL for fees in your wallet, and that you are on walletroast.fun (not a .vercel.app URL).";
+            "Phantom rejected the transaction. Make sure you have enough SOL in your wallet and that you are on walletroast.fun (not a .vercel.app URL).";
         }
       }
       onError(message);

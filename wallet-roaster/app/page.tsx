@@ -43,7 +43,7 @@ export default function Home() {
           >
             WALLET ROASTER
           </button>
-          <span className="text-xs text-zinc-600 font-mono">$0.50 USDC</span>
+          <span className="text-xs text-zinc-600 font-mono">0.004 SOL</span>
         </div>
       </header>
 
@@ -64,8 +64,8 @@ export default function Home() {
                 <span className="text-red-500">roasted.</span>
               </h1>
               <p className="text-zinc-500 text-base leading-relaxed">
-                Paste any Solana wallet address or connect your own. Pay $0.50
-                USDC. Receive a savage, AI-generated roast of your on-chain
+                Paste any Solana wallet address or connect your own. Pay 0.004
+                SOL. Receive a savage, AI-generated roast of your on-chain
                 history — the rugs, the tops you bought, the bottoms you sold.
               </p>
             </div>
@@ -75,8 +75,8 @@ export default function Home() {
             {/* Stats bar */}
             <div className="border-t border-[#1a1a1a] pt-8 grid grid-cols-3 gap-6">
               <div>
-                <p className="text-lg font-bold text-white">$0.50</p>
-                <p className="text-xs text-zinc-600 mt-0.5">per roast</p>
+                <p className="text-lg font-bold text-white">0.004</p>
+                <p className="text-xs text-zinc-600 mt-0.5">SOL per roast</p>
               </div>
               <div>
                 <p className="text-lg font-bold text-white">100%</p>
@@ -120,7 +120,7 @@ export default function Home() {
               </div>
               <div className="border-t border-[#1f1f1f] pt-3 flex justify-between text-sm font-medium">
                 <span className="text-zinc-400">Total</span>
-                <span className="text-white">$0.50 USDC</span>
+                <span className="text-white">0.004 SOL</span>
               </div>
             </div>
 
