@@ -1,11 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { validatePayment } from "@/lib/pump-agent";
-import { VERIFY_MAX_ATTEMPTS, VERIFY_RETRY_DELAY_MS } from "@/lib/constants";
 import type { VerifyRequest, VerifyResponse } from "@/types";
-
-async function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 export async function POST(req: NextRequest) {
   try {
@@ -20,19 +15,9 @@ export async function POST(req: NextRequest) {
     }
 
     const invoice = { memo, amount, startTime, endTime };
+    const verified = await validatePayment(walletAddress, invoice);
 
-    for (let attempt = 0; attempt < VERIFY_MAX_ATTEMPTS; attempt++) {
-      const verified = await validatePayment(walletAddress, invoice);
-      if (verified) {
-        const response: VerifyResponse = { verified: true };
-        return NextResponse.json(response);
-      }
-      if (attempt < VERIFY_MAX_ATTEMPTS - 1) {
-        await sleep(VERIFY_RETRY_DELAY_MS);
-      }
-    }
-
-    const response: VerifyResponse = { verified: false };
+    const response: VerifyResponse = { verified };
     return NextResponse.json(response);
   } catch (error) {
     console.error("[/api/verify]", error);

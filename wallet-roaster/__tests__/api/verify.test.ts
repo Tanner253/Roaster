@@ -7,11 +7,6 @@ vi.mock("@/lib/pump-agent", () => ({
   validatePayment: mockValidatePayment,
 }));
 
-vi.mock("@/lib/constants", () => ({
-  VERIFY_MAX_ATTEMPTS: 3,
-  VERIFY_RETRY_DELAY_MS: 10, // Fast for tests
-}));
-
 function makeRequest(body: unknown) {
   return new NextRequest("http://localhost/api/verify", {
     method: "POST",
@@ -31,7 +26,7 @@ const VALID_BODY = {
 describe("POST /api/verify", () => {
   beforeEach(() => vi.clearAllMocks());
 
-  it("returns { verified: true } when payment is confirmed on first attempt", async () => {
+  it("returns { verified: true } when payment is confirmed", async () => {
     mockValidatePayment.mockResolvedValue(true);
     const { POST } = await import("@/app/api/verify/route");
     const res = await POST(makeRequest(VALID_BODY));
@@ -42,27 +37,14 @@ describe("POST /api/verify", () => {
     expect(mockValidatePayment).toHaveBeenCalledTimes(1);
   });
 
-  it("retries and returns { verified: true } on second attempt", async () => {
-    mockValidatePayment
-      .mockResolvedValueOnce(false)
-      .mockResolvedValueOnce(true);
-
-    const { POST } = await import("@/app/api/verify/route");
-    const res = await POST(makeRequest(VALID_BODY));
-    const body = await res.json();
-
-    expect(body.verified).toBe(true);
-    expect(mockValidatePayment).toHaveBeenCalledTimes(2);
-  });
-
-  it("returns { verified: false } after exhausting all attempts", async () => {
+  it("returns { verified: false } when payment is not confirmed", async () => {
     mockValidatePayment.mockResolvedValue(false);
     const { POST } = await import("@/app/api/verify/route");
     const res = await POST(makeRequest(VALID_BODY));
     const body = await res.json();
 
     expect(body.verified).toBe(false);
-    expect(mockValidatePayment).toHaveBeenCalledTimes(3); // VERIFY_MAX_ATTEMPTS
+    expect(mockValidatePayment).toHaveBeenCalledTimes(1);
   });
 
   it("returns 400 when required fields are missing", async () => {

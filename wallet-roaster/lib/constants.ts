@@ -1,5 +1,10 @@
+export const SOLANA_NETWORK = (process.env.NEXT_PUBLIC_SOLANA_NETWORK ||
+  "mainnet-beta") as "devnet" | "mainnet-beta";
+
 export const SOLANA_RPC_URL =
-  process.env.SOLANA_RPC_URL ?? "https://api.mainnet-beta.solana.com";
+  process.env.SOLANA_RPC_URL ??
+  process.env.NEXT_PUBLIC_SOLANA_RPC_URL ??
+  "https://api.mainnet-beta.solana.com";
 
 export const NEXT_PUBLIC_SOLANA_RPC_URL =
   process.env.NEXT_PUBLIC_SOLANA_RPC_URL ?? "https://api.mainnet-beta.solana.com";
