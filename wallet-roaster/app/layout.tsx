@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://walletroaster.com"
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://walletroast.fun"
   ),
   title: "Wallet Roaster — Get Your On-Chain History Dragged by AI",
   description:
