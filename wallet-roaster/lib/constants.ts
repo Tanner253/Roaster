@@ -1,21 +1,26 @@
-export const SOLANA_NETWORK = (process.env.NEXT_PUBLIC_SOLANA_NETWORK ||
-  "mainnet-beta") as "devnet" | "mainnet-beta";
+export const SOLANA_NETWORK = (
+  (process.env.NEXT_PUBLIC_SOLANA_NETWORK || "mainnet-beta").trim()
+) as "devnet" | "mainnet-beta";
 
-export const SOLANA_RPC_URL =
+export const SOLANA_RPC_URL = (
   process.env.SOLANA_RPC_URL ??
   process.env.NEXT_PUBLIC_SOLANA_RPC_URL ??
-  "https://api.mainnet-beta.solana.com";
+  "https://api.mainnet-beta.solana.com"
+).trim();
 
-export const NEXT_PUBLIC_SOLANA_RPC_URL =
-  process.env.NEXT_PUBLIC_SOLANA_RPC_URL ?? "https://api.mainnet-beta.solana.com";
+export const NEXT_PUBLIC_SOLANA_RPC_URL = (
+  process.env.NEXT_PUBLIC_SOLANA_RPC_URL ?? "https://api.mainnet-beta.solana.com"
+).trim();
 
-export const HELIUS_API_KEY = process.env.HELIUS_API_KEY ?? "";
+export const HELIUS_API_KEY = (process.env.HELIUS_API_KEY ?? "").trim();
 
-export const AGENT_TOKEN_MINT_ADDRESS =
-  process.env.AGENT_TOKEN_MINT_ADDRESS ?? "";
+export const AGENT_TOKEN_MINT_ADDRESS = (
+  process.env.AGENT_TOKEN_MINT_ADDRESS ?? ""
+).trim();
 
-export const CURRENCY_MINT =
-  process.env.CURRENCY_MINT ?? "So11111111111111111111111111111111111111112";
+export const CURRENCY_MINT = (
+  process.env.CURRENCY_MINT ?? "So11111111111111111111111111111111111111112"
+).trim();
 
 // 0.01 SOL = 10,000,000 lamports
 export const PRICE_AMOUNT = Number(process.env.PRICE_AMOUNT ?? "10000000");
