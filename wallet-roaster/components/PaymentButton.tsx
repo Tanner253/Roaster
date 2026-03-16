@@ -21,7 +21,7 @@ type Stage =
   | "done";
 
 const STAGE_LABELS: Record<Stage, string> = {
-  idle: "Pay 0.004 SOL to Get Roasted",
+  idle: "Pay 0.01 SOL to Get Roasted",
   generating_invoice: "Preparing transaction...",
   awaiting_signature: "Approve in wallet...",
   verifying: "Confirming payment...",

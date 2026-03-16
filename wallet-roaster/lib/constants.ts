@@ -17,8 +17,8 @@ export const AGENT_TOKEN_MINT_ADDRESS =
 export const CURRENCY_MINT =
   process.env.CURRENCY_MINT ?? "So11111111111111111111111111111111111111112";
 
-// 0.004 SOL = 4,000,000 lamports (~$0.50 at ~$130/SOL)
-export const PRICE_AMOUNT = Number(process.env.PRICE_AMOUNT ?? "4000000");
+// 0.01 SOL = 10,000,000 lamports
+export const PRICE_AMOUNT = Number(process.env.PRICE_AMOUNT ?? "10000000");
 
 export const PAYMENT_WINDOW_SECONDS = 86400; // 24 hours
 

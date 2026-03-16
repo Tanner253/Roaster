@@ -19,18 +19,18 @@ export const metadata: Metadata = {
   ),
   title: "Wallet Roaster — Get Your On-Chain History Dragged by AI",
   description:
-    "Pay 0.004 SOL to get your Solana wallet roasted by AI. Every fee buys back $TOKEN.",
+    "Pay 0.01 SOL to get your Solana wallet roasted by AI. Every fee buys back $TOKEN.",
   openGraph: {
     title: "Wallet Roaster",
     description:
-      "Pay 0.004 SOL to get your on-chain history dragged by AI. Every fee buys back $TOKEN.",
+      "Pay 0.01 SOL to get your on-chain history dragged by AI. Every fee buys back $TOKEN.",
     images: ["/og-image.png"],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Wallet Roaster",
-    description: "Pay 0.004 SOL to get your on-chain history dragged by AI.",
+    description: "Pay 0.01 SOL to get your on-chain history dragged by AI.",
     images: ["/og-image.png"],
   },
 };
