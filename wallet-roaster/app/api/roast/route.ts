@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { validatePayment } from "@/lib/pump-agent";
 import { analyzeWallet } from "@/lib/wallet-analyzer";
 import { generateRoast } from "@/lib/roast-generator";
-import type { RoastRequest, RoastResult } from "@/types";
+import type { RoastResult } from "@/types";
 
 export async function POST(req: NextRequest) {
   try {
-    const body = (await req.json()) as RoastRequest;
-    const { walletAddress, memo, amount, startTime, endTime } = body;
+    const body = await req.json();
+    const { walletAddress, targetWallet, memo, amount, startTime, endTime } =
+      body;
 
     if (!walletAddress || !memo || !amount || !startTime || !endTime) {
       return NextResponse.json(
@@ -16,7 +17,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Server-side payment re-verification — never trust the client
     const invoice = { memo, amount, startTime, endTime };
     const verified = await validatePayment(walletAddress, invoice);
 
@@ -27,7 +27,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const profile = await analyzeWallet(walletAddress);
+    const addressToRoast = targetWallet || walletAddress;
+    const profile = await analyzeWallet(addressToRoast);
     const result = await generateRoast(profile);
 
     return NextResponse.json(result satisfies RoastResult);

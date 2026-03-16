@@ -47,13 +47,15 @@ const PaymentButton: FC<PaymentButtonProps> = ({
       return;
     }
 
+    const payerAddress = publicKey.toBase58();
+
     try {
       setStage("generating_invoice");
 
       const invoiceRes = await fetch("/api/invoice", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ walletAddress }),
+        body: JSON.stringify({ walletAddress: payerAddress }),
       });
 
       if (!invoiceRes.ok) {
@@ -86,7 +88,7 @@ const PaymentButton: FC<PaymentButtonProps> = ({
       const verifyRes = await fetch("/api/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ walletAddress, ...invoice }),
+        body: JSON.stringify({ walletAddress: payerAddress, ...invoice }),
       });
 
       const { verified } = (await verifyRes.json()) as { verified: boolean };
@@ -102,7 +104,11 @@ const PaymentButton: FC<PaymentButtonProps> = ({
       const roastRes = await fetch("/api/roast", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ walletAddress, ...invoice }),
+        body: JSON.stringify({
+          walletAddress: payerAddress,
+          targetWallet: walletAddress,
+          ...invoice,
+        }),
       });
 
       if (!roastRes.ok) {
