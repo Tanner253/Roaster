@@ -112,10 +112,18 @@ const PaymentButton: FC<PaymentButtonProps> = ({
       const result = (await roastRes.json()) as RoastResult;
       setStage("done");
       onRoastReady(result);
-    } catch (err) {
+    } catch (err: unknown) {
       setStage("idle");
-      const message =
-        err instanceof Error ? err.message : "Something went wrong";
+      console.error("[PaymentButton] full error:", err);
+
+      let message = "Something went wrong";
+      if (err instanceof Error) {
+        message = err.message;
+        if (err.name === "WalletSignTransactionError") {
+          message =
+            "Phantom rejected the transaction. Make sure you have enough USDC ($0.50) and SOL for fees in your wallet, and that you are on walletroast.fun (not a .vercel.app URL).";
+        }
+      }
       onError(message);
     }
   }, [
