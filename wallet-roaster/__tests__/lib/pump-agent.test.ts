@@ -24,15 +24,11 @@ vi.mock("@solana/web3.js", () => ({
 }));
 
 vi.mock("@pump-fun/agent-payments-sdk", () => ({
-  PumpAgentOffline: {
-    load: vi.fn().mockReturnValue({
+  PumpAgent: vi.fn().mockImplementation(function () {
+    return {
       buildAcceptPaymentInstructions: vi.fn().mockResolvedValue([
         { programId: "fakeProgramId", keys: [], data: Buffer.alloc(0) },
       ]),
-    }),
-  },
-  PumpAgent: vi.fn().mockImplementation(function () {
-    return {
       validateInvoicePayment: vi.fn().mockResolvedValue(true),
     };
   }),
@@ -46,12 +42,11 @@ describe("pump-agent", () => {
     process.env.SOLANA_RPC_URL = "https://api.mainnet-beta.solana.com";
   });
 
-  it("generateMemo returns a numeric string", async () => {
+  it("generateMemo returns a positive number", async () => {
     const { generateMemo } = await import("@/lib/pump-agent");
     const memo = generateMemo();
-    expect(typeof memo).toBe("string");
-    expect(Number(memo)).not.toBeNaN();
-    expect(Number(memo)).toBeGreaterThan(0);
+    expect(typeof memo).toBe("number");
+    expect(memo).toBeGreaterThan(0);
   });
 
   it("generateMemo returns different values each call", async () => {
@@ -72,20 +67,16 @@ describe("pump-agent", () => {
     expect(invoice).toHaveProperty("startTime");
     expect(invoice).toHaveProperty("endTime");
 
-    const start = Number(invoice.startTime);
-    const end = Number(invoice.endTime);
-
-    expect(start).toBeGreaterThanOrEqual(nowBefore);
-    expect(start).toBeLessThanOrEqual(nowAfter);
-    expect(end - start).toBe(86400); // 24h window
+    expect(invoice.startTime).toBeGreaterThanOrEqual(nowBefore);
+    expect(invoice.startTime).toBeLessThanOrEqual(nowAfter);
+    expect(invoice.endTime - invoice.startTime).toBe(86400); // 24h window
   });
 
   it("buildInvoiceParams uses configured PRICE_AMOUNT", async () => {
     process.env.PRICE_AMOUNT = "500000";
-    // Re-import constants fresh
     const { buildInvoiceParams } = await import("@/lib/pump-agent");
     const invoice = buildInvoiceParams();
-    expect(invoice.amount).toBe("500000");
+    expect(invoice.amount).toBe(500000);
   });
 
   it("buildPaymentTransaction returns a base64 string", async () => {

@@ -1,8 +1,8 @@
 export interface InvoiceParams {
-  memo: string;
-  amount: string;
-  startTime: string;
-  endTime: string;
+  amount: number;
+  memo: number;
+  startTime: number;
+  endTime: number;
 }
 
 export interface WalletProfile {
@@ -50,10 +50,10 @@ export interface InvoiceResponse {
 
 export interface VerifyRequest {
   walletAddress: string;
-  memo: string;
-  amount: string;
-  startTime: string;
-  endTime: string;
+  memo: number;
+  amount: number;
+  startTime: number;
+  endTime: number;
 }
 
 export interface VerifyResponse {
@@ -62,8 +62,8 @@ export interface VerifyResponse {
 
 export interface RoastRequest {
   walletAddress: string;
-  memo: string;
-  amount: string;
-  startTime: string;
-  endTime: string;
+  memo: number;
+  amount: number;
+  startTime: number;
+  endTime: number;
 }

@@ -22,7 +22,7 @@ async function main() {
   }
 
   const mint = new PublicKey(mintArg);
-  const buybackBps = Number(bpsArg ?? "5000");
+  const buybackBps = Number(bpsArg ?? "10000");
 
   if (buybackBps < 0 || buybackBps > 10000) {
     console.error("BUYBACK_BPS must be between 0 and 10000");

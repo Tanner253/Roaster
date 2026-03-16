@@ -48,10 +48,10 @@ function makeRequest(body: unknown) {
 
 const VALID_BODY = {
   walletAddress: "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU",
-  memo: "123456789",
-  amount: "500000",
-  startTime: "1710000000",
-  endTime: "1710086400",
+  memo: 123456789,
+  amount: 500000,
+  startTime: 1710000000,
+  endTime: 1710086400,
 };
 
 describe("POST /api/roast", () => {

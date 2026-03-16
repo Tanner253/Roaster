@@ -3,10 +3,10 @@ import { NextRequest } from "next/server";
 
 vi.mock("@/lib/pump-agent", () => ({
   buildInvoiceParams: vi.fn().mockReturnValue({
-    memo: "123456789",
-    amount: "500000",
-    startTime: "1710000000",
-    endTime: "1710086400",
+    memo: 123456789,
+    amount: 500000,
+    startTime: 1710000000,
+    endTime: 1710086400,
   }),
   buildPaymentTransaction: vi.fn().mockResolvedValue("base64txdata=="),
 }));
@@ -40,8 +40,8 @@ describe("POST /api/invoice", () => {
     expect(res.status).toBe(200);
     expect(body.transaction).toBe("base64txdata==");
     expect(body.invoice).toMatchObject({
-      memo: "123456789",
-      amount: "500000",
+      memo: 123456789,
+      amount: 500000,
     });
   });
 

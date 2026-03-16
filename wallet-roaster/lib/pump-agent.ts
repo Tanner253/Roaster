@@ -1,5 +1,5 @@
 import { Connection, PublicKey, Transaction } from "@solana/web3.js";
-import { PumpAgent, PumpAgentOffline } from "@pump-fun/agent-payments-sdk";
+import { PumpAgent } from "@pump-fun/agent-payments-sdk";
 import {
   SOLANA_RPC_URL,
   AGENT_TOKEN_MINT_ADDRESS,
@@ -9,6 +9,8 @@ import {
 } from "./constants";
 import type { InvoiceParams } from "@/types";
 
+let _pumpAgent: PumpAgent | null = null;
+
 function getAgentMint(): PublicKey {
   if (!AGENT_TOKEN_MINT_ADDRESS) {
     throw new Error("AGENT_TOKEN_MINT_ADDRESS is not configured");
@@ -16,26 +18,28 @@ function getAgentMint(): PublicKey {
   return new PublicKey(AGENT_TOKEN_MINT_ADDRESS);
 }
 
-export function getPumpAgentOffline(): PumpAgentOffline {
-  return PumpAgentOffline.load(getAgentMint());
+function getConnection(): Connection {
+  return new Connection(SOLANA_RPC_URL, "confirmed");
 }
 
-export function getPumpAgentOnline(): PumpAgent {
-  const connection = new Connection(SOLANA_RPC_URL, "confirmed");
-  return new PumpAgent(getAgentMint(), undefined, connection);
+export function getPumpAgent(): PumpAgent {
+  if (!_pumpAgent) {
+    _pumpAgent = new PumpAgent(getAgentMint(), undefined, getConnection());
+  }
+  return _pumpAgent;
 }
 
-export function generateMemo(): string {
-  return Math.floor(Math.random() * 1e15).toString();
+export function generateMemo(): number {
+  return Math.floor(Math.random() * 900000000000) + 100000;
 }
 
 export function buildInvoiceParams(): InvoiceParams {
   const now = Math.floor(Date.now() / 1000);
   return {
+    amount: PRICE_AMOUNT,
     memo: generateMemo(),
-    amount: PRICE_AMOUNT.toString(),
-    startTime: now.toString(),
-    endTime: (now + PAYMENT_WINDOW_SECONDS).toString(),
+    startTime: now,
+    endTime: now + PAYMENT_WINDOW_SECONDS,
   };
 }
 
@@ -43,47 +47,43 @@ export async function buildPaymentTransaction(
   userPublicKey: PublicKey,
   invoice: InvoiceParams
 ): Promise<string> {
-  const connection = new Connection(SOLANA_RPC_URL, "confirmed");
-  const agent = getPumpAgentOffline();
+  const agent = getPumpAgent();
+  const conn = getConnection();
   const currencyMint = new PublicKey(CURRENCY_MINT);
 
   const instructions = await agent.buildAcceptPaymentInstructions({
     user: userPublicKey,
     currencyMint,
-    amount: invoice.amount,
-    memo: invoice.memo,
-    startTime: invoice.startTime,
-    endTime: invoice.endTime,
+    amount: String(invoice.amount),
+    memo: String(invoice.memo),
+    startTime: String(invoice.startTime),
+    endTime: String(invoice.endTime),
   });
 
-  const { blockhash, lastValidBlockHeight } =
-    await connection.getLatestBlockhash("confirmed");
+  const { blockhash } = await conn.getLatestBlockhash("confirmed");
 
   const tx = new Transaction();
-  tx.add(...instructions);
   tx.recentBlockhash = blockhash;
-  tx.lastValidBlockHeight = lastValidBlockHeight;
   tx.feePayer = userPublicKey;
+  tx.add(...instructions);
 
-  return Buffer.from(tx.serialize({ requireAllSignatures: false })).toString(
-    "base64"
-  );
+  return tx.serialize({ requireAllSignatures: false }).toString("base64");
 }
 
 export async function validatePayment(
   walletAddress: string,
   invoice: InvoiceParams
 ): Promise<boolean> {
-  const agent = getPumpAgentOnline();
+  const agent = getPumpAgent();
   const user = new PublicKey(walletAddress);
   const currencyMint = new PublicKey(CURRENCY_MINT);
 
   return agent.validateInvoicePayment({
     user,
     currencyMint,
-    amount: Number(invoice.amount),
-    memo: Number(invoice.memo),
-    startTime: Number(invoice.startTime),
-    endTime: Number(invoice.endTime),
+    amount: invoice.amount,
+    memo: invoice.memo,
+    startTime: invoice.startTime,
+    endTime: invoice.endTime,
   });
 }

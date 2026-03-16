@@ -2,7 +2,7 @@
 
 import { FC, useState, useCallback } from "react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
-import { Transaction, VersionedTransaction } from "@solana/web3.js";
+import { Transaction } from "@solana/web3.js";
 import type { InvoiceParams, RoastResult } from "@/types";
 
 interface PaymentButtonProps {
@@ -33,7 +33,7 @@ const PaymentButton: FC<PaymentButtonProps> = ({
   onRoastReady,
   onError,
 }) => {
-  const { signTransaction, sendTransaction } = useWallet();
+  const { signTransaction } = useWallet();
   const { connection } = useConnection();
   const [stage, setStage] = useState<Stage>("idle");
 
@@ -43,7 +43,6 @@ const PaymentButton: FC<PaymentButtonProps> = ({
     try {
       setStage("generating_invoice");
 
-      // 1. Generate invoice + unsigned TX
       const invoiceRes = await fetch("/api/invoice", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -61,31 +60,25 @@ const PaymentButton: FC<PaymentButtonProps> = ({
 
       setStage("awaiting_signature");
 
-      // 2. Deserialize + sign TX
-      const txBytes = Buffer.from(txBase64, "base64");
-      let tx: Transaction | VersionedTransaction;
-
-      try {
-        tx = VersionedTransaction.deserialize(txBytes);
-      } catch {
-        tx = Transaction.from(txBytes);
-      }
+      const tx = Transaction.from(Buffer.from(txBase64, "base64"));
 
       if (!signTransaction) throw new Error("Wallet does not support signing");
 
-      const signed = await signTransaction(tx as Transaction);
+      const signedTx = await signTransaction(tx);
 
-      // 3. Send TX on-chain
-      const signature = await sendTransaction(
-        signed as Transaction,
-        connection
+      const signature = await connection.sendRawTransaction(
+        signedTx.serialize(),
+        { skipPreflight: false, preflightCommitment: "confirmed" }
       );
 
-      await connection.confirmTransaction(signature, "confirmed");
+      const latestBlockhash = await connection.getLatestBlockhash("confirmed");
+      await connection.confirmTransaction(
+        { signature, ...latestBlockhash },
+        "confirmed"
+      );
 
       setStage("verifying");
 
-      // 4. Verify payment server-side
       const verifyRes = await fetch("/api/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -102,7 +95,6 @@ const PaymentButton: FC<PaymentButtonProps> = ({
 
       setStage("roasting");
 
-      // 5. Generate roast
       const roastRes = await fetch("/api/roast", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -126,7 +118,6 @@ const PaymentButton: FC<PaymentButtonProps> = ({
     stage,
     walletAddress,
     signTransaction,
-    sendTransaction,
     connection,
     onRoastReady,
     onError,

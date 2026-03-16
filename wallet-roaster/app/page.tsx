@@ -79,7 +79,7 @@ export default function Home() {
                 <p className="text-xs text-zinc-600 mt-0.5">per roast</p>
               </div>
               <div>
-                <p className="text-lg font-bold text-white">50%</p>
+                <p className="text-lg font-bold text-white">100%</p>
                 <p className="text-xs text-zinc-600 mt-0.5">buyback</p>
               </div>
               <div>
