@@ -24,7 +24,7 @@ function getConnection(): Connection {
 
 export function getPumpAgent(): PumpAgent {
   if (!_pumpAgent) {
-    _pumpAgent = new PumpAgent(getAgentMint(), undefined, getConnection());
+    _pumpAgent = new PumpAgent(getAgentMint(), "mainnet", getConnection());
   }
   return _pumpAgent;
 }
